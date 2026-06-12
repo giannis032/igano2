@@ -61,7 +61,7 @@ function LogoBadge({ size = 44 }: { size?: number }) {
   return (
     <div
       aria-hidden
-      className="flex flex-col items-center justify-center rounded-full select-none shrink-0"
+      className="flex items-center justify-center rounded-full select-none shrink-0 overflow-hidden"
       style={{
         width: size,
         height: size,
@@ -69,13 +69,11 @@ function LogoBadge({ size = 44 }: { size?: number }) {
         color: "var(--paper)",
       }}
     >
-      <div
-        className="font-display leading-none text-center"
-        style={{ fontSize: size * 0.26, letterSpacing: "0.08em" }}
-      >
-        <div style={{ transform: "translateX(0.04em)" }}>IGA</div>
-        <div>NO</div>
-      </div>
+      <img
+        src="/logo.png"
+        alt="Igano Logo"
+        className="w-full h-full object-contain"
+      />
     </div>
   );
 }
@@ -210,7 +208,7 @@ export default function Home() {
     {
       title: "Noodles",
       desc: "Wok-fried to order over high flame — pick your noodle, sauce and topping.",
-      art: <NoodleBowlArt />,
+      art: <img src="/noodles.png" alt="Noodles" className="w-full h-auto object-cover rounded-xl" />,
       tags: ["Chicken teriyaki", "Beef hoisin", "Veggie sweet & sour"],
       icon: <Flame size={16} />,
       iconLabel: "Wok-fired",
@@ -218,7 +216,7 @@ export default function Home() {
     {
       title: "Bao Buns",
       desc: "Pillow-soft steamed buns with slow-cooked fillings and crunchy slaw.",
-      art: <BaoBunArt />,
+      art: <img src="/bao.png" alt="Bao Buns" className="w-full h-auto object-cover rounded-xl" />,
       tags: ["Crispy chicken bao", "Pulled pork bao", "Tofu bao"],
       icon: <Leaf size={16} />,
       iconLabel: "Veggie options",
@@ -248,10 +246,7 @@ export default function Home() {
               <span className="font-display text-xl tracking-[0.18em]">
                 IGANO
               </span>
-              <span
-                className="hidden sm:block text-[11px] uppercase tracking-[0.22em]"
-                style={{ color: "var(--ink-soft)" }}
-              >
+              <span className="hidden sm:block text-[11px] uppercase tracking-[0.22em] text-orange-500">
                 Noodles &amp; Buns
               </span>
             </div>
@@ -334,7 +329,7 @@ export default function Home() {
               >
                 <span className="inline-flex items-center gap-1.5">
                   <Star size={16} fill="var(--amber)" stroke="var(--amber)" />
-                  4.7 · 7,178 reviews
+                  4.7 · 178 reviews
                 </span>
                 <span>€ 5–10 per person</span>
                 <span className="inline-flex items-center gap-1.5">
@@ -355,17 +350,12 @@ export default function Home() {
                   boxShadow: "0 30px 60px rgba(24,24,22,0.18)",
                 }}
               >
-                <div className="absolute inset-0 flex items-center justify-center p-10">
-                  <NoodleBowlArt />
-                </div>
-                <div
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em]"
-                  style={{
-                    background: "rgba(24,24,22,0.85)",
-                    color: "var(--paper)",
-                  }}
-                >
-                  Your food photo here
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img
+                    src="/igano.png"
+                    alt="Igano food"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
 
@@ -426,18 +416,23 @@ export default function Home() {
               {menuItems.map((item) => (
                 <article
                   key={item.title}
-                  className="group rounded-[1.75rem] p-6 sm:p-8 transition-transform duration-200 hover:-translate-y-1"
+                  className="group rounded-[1.75rem] p-6 sm:p-8 transition-transform duration-200 hover:-translate-y-1 flex flex-col"
                   style={{ background: "var(--paper)" }}
                 >
+                  {/* Image Container - ΔΙΟΡΘΩΜΕΝΟ για full frame */}
                   <div
-                    className="mb-6 flex aspect-[16/10] items-center justify-center rounded-2xl p-6"
+                    className="mb-6 flex aspect-[16/10] rounded-2xl overflow-hidden border"
                     style={{
+                      // Κρατάμε το gradient για case που αργεί να φορτώσει η φωτό
                       background:
                         "linear-gradient(150deg, var(--wood-light), var(--paper-soft))",
-                      border: "1px solid var(--line)",
+                      borderColor: "var(--line)",
                     }}
                   >
-                    <div className="h-full w-auto max-w-[220px]">{item.art}</div>
+                    {/* Εσωτερικό wrapper - ΔΙΟΡΘΩΜΕΝΟ για full size */}
+                    <div className="h-full w-full">
+                      {item.art}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-3">
@@ -445,7 +440,7 @@ export default function Home() {
                       {item.title}
                     </h3>
                     <span
-                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider shrink-0"
                       style={{
                         background: "var(--wood-light)",
                         color: "var(--ink-soft)",
@@ -499,6 +494,7 @@ export default function Home() {
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
               {/* Info cards */}
               <div className="grid gap-4 content-start">
+                
                 <a
                   href={MAPS_URL}
                   target="_blank"
@@ -522,10 +518,7 @@ export default function Home() {
                     <span className="mt-1 block font-semibold">
                       Dagkli 4, Kavala 654 03
                     </span>
-                    <span
-                      className="block text-sm"
-                      style={{ color: "var(--ink-soft)" }}
-                    >
+                    <span className="block text-sm" style={{ color: "var(--ink-soft)" }}>
                       Outdoor seating available
                     </span>
                   </span>
@@ -549,13 +542,8 @@ export default function Home() {
                     >
                       Phone
                     </span>
-                    <span className="mt-1 block font-semibold">
-                      251 062 1809
-                    </span>
-                    <span
-                      className="block text-sm"
-                      style={{ color: "var(--ink-soft)" }}
-                    >
+                    <span className="mt-1 block font-semibold">251 062 1809</span>
+                    <span className="block text-sm" style={{ color: "var(--ink-soft)" }}>
                       Call for takeaway orders
                     </span>
                   </span>
@@ -602,62 +590,33 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Map — replace the inner block with your Google Maps iframe embed */}
-              <div
-                className="relative min-h-[320px] overflow-hidden rounded-[1.75rem] border"
-                style={{
-                  borderColor: "var(--line)",
-                  background: "var(--paper-soft)",
-                }}
-              >
-                <svg
-                  className="absolute inset-0 h-full w-full opacity-40"
-                  aria-hidden
+              {/* Map */}
+              <div className="flex flex-col gap-3">
+                <div
+                  className="relative min-h-[320px] flex-1 overflow-hidden rounded-[1.75rem] border"
+                  style={{ borderColor: "var(--line)", background: "var(--paper-soft)" }}
                 >
-                  <defs>
-                    <pattern
-                      id="grid"
-                      width="36"
-                      height="36"
-                      patternUnits="userSpaceOnUse"
-                    >
-                      <path
-                        d="M 36 0 L 0 0 0 36"
-                        fill="none"
-                        stroke="var(--line)"
-                        strokeWidth="1.5"
-                      />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-                  <span
-                    className="flex h-14 w-14 items-center justify-center rounded-full"
-                    style={{ background: "var(--ink)" }}
-                  >
-                    <MapPin size={24} style={{ color: "var(--amber)" }} />
-                  </span>
-                  <p className="font-display text-xl uppercase tracking-wide">
-                    Dagkli 4, Kavala
-                  </p>
-                  <p
-                    className="max-w-xs text-sm"
-                    style={{ color: "var(--ink-soft)" }}
-                  >
-                    Replace this block with your Google Maps embed iframe.
-                  </p>
-                  <a
-                    href={MAPS_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold"
-                    style={{ background: "var(--ink)", color: "var(--paper)" }}
-                  >
-                    Open in Google Maps{" "}
-                    <ArrowUpRight size={15} style={{ color: "var(--amber)" }} />
-                  </a>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3014.0894774864582!2d24.40390467551012!3d40.935706123891144!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14aebb0037d112a3%3A0xd8248b82bcf59f66!2sIGANO%20-%20Noodles%20and%20Buns!5e0!3m2!1sen!2sgr!4v1781127770716!5m2!1sen!2sgr"
+                    width="100%"
+                    height="100%"
+                    className="absolute inset-0 h-full w-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
                 </div>
+
+                <a
+                  href={MAPS_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90"
+                  style={{ background: "var(--amber)", color: "var(--ink)" }}
+                >
+                  Open in Google Maps{" "}
+                  <ArrowUpRight size={15} />
+                </a>
               </div>
             </div>
           </div>
@@ -689,19 +648,21 @@ export default function Home() {
       <footer style={{ background: "var(--ink)", color: "var(--paper)" }}>
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
+            {/* Brand */}
             <div className="flex items-center gap-3">
               <LogoBadge size={40} />
-              <div className="leading-tight">
-                <span className="font-display tracking-[0.18em]">IGANO</span>
-                <span className="block text-[11px] uppercase tracking-[0.2em] opacity-60">
+              <div className="leading-tight text-center sm:text-left">
+                <span className="font-display tracking-[0.18em] block">IGANO</span>
+                <span className="block text-[11px] uppercase tracking-[0.2em] opacity-60 mt-0.5">
                   Noodles &amp; Buns · Kavala
                 </span>
               </div>
             </div>
 
+            {/* Socials */}
             <div className="flex items-center gap-3">
               <a
-                href="#"
+                href="https://www.instagram.com/igano_streetfood?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                 aria-label="Instagram"
                 className="flex h-10 w-10 items-center justify-center rounded-full border transition-colors hover:bg-[#f2efe9] hover:text-[#181816]"
                 style={{ borderColor: "rgba(242,239,233,0.25)" }}
@@ -709,7 +670,7 @@ export default function Home() {
                 <InstagramIcon size={17} />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/IGANO.TASTE/"
                 aria-label="Facebook"
                 className="flex h-10 w-10 items-center justify-center rounded-full border transition-colors hover:bg-[#f2efe9] hover:text-[#181816]"
                 style={{ borderColor: "rgba(242,239,233,0.25)" }}
@@ -719,16 +680,16 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Copyright */}
           <div
-            className="mt-8 flex flex-col items-center gap-2 border-t pt-6 text-xs sm:flex-row sm:justify-between"
+            className="mt-8 flex flex-col items-center text-center gap-2 border-t pt-6 text-xs sm:flex-row sm:justify-between sm:text-left"
             style={{
               borderColor: "rgba(242,239,233,0.15)",
               color: "rgba(242,239,233,0.6)",
             }}
           >
             <p>
-              © {new Date().getFullYear()} IGANO — Noodles and Buns. All rights
-              reserved.
+              © {new Date().getFullYear()} IGANO — Noodles and Buns. All rights reserved.
             </p>
             <p>Dagkli 4, Kavala 654 03 · 251 062 1809</p>
           </div>
