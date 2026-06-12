@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Anton, Archivo } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 const anton = Anton({
   weight: "400",
@@ -41,7 +42,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${anton.variable} ${archivo.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

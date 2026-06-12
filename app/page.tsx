@@ -1,4 +1,10 @@
+'use client';
+
+import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   MapPin,
   Phone,
@@ -12,7 +18,174 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-/* Brand icons — αφαιρέθηκαν από το lucide-react, οπότε inline SVG */
+gsap.registerPlugin(ScrollTrigger);
+
+/* ------------------------------------------------------------------ */
+/* Translations                                                         */
+/* ------------------------------------------------------------------ */
+
+const translations = {
+  en: {
+    nav: {
+      subtitle: "Noodles & Buns",
+      menu: "Menu",
+      location: "Location",
+      orderOnline: "Order Online",
+    },
+    hero: {
+      badge: "Asian street food · Kavala",
+      h1line3: "in Kavala",
+      body: "Authentic street food, made fresh in front of you. Build your wok noodles, grab a steamed bao, and go — or let us bring it to your door.",
+      orderWolt: "Order on Wolt",
+      orderEfood: "Order on E-food",
+      reviews: "4.7 · 178 reviews",
+      priceRange: "€ 5–10 per person",
+      openHours: "Open daily until late",
+      freshBadge: "FRESH",
+      freshSub: "wok daily",
+    },
+    menu: {
+      eyebrow: "Bestsellers",
+      headingMain: "Pick your",
+      headingAccent: "craving",
+      fullMenuLink: "Full menu on Wolt",
+    },
+    menuItems: [
+      {
+        title: "Noodles",
+        desc: "Wok-fried to order over high flame — pick your noodle, sauce and topping.",
+        tags: ["Chicken teriyaki", "Beef hoisin", "Veggie sweet & sour"],
+        iconLabel: "Wok-fired",
+        alt: "Noodles",
+      },
+      {
+        title: "Bao Buns",
+        desc: "Pillow-soft steamed buns with slow-cooked fillings and crunchy slaw.",
+        tags: ["Crispy chicken bao", "Pulled pork bao", "Tofu bao"],
+        iconLabel: "Veggie options",
+        alt: "Bao Buns",
+      },
+    ],
+    location: {
+      eyebrow: "Find us",
+      heading: "In the heart of Kavala",
+      addressLabel: "Address",
+      addressValue: "Dagkli 4, Kavala 654 03",
+      addressNote: "Outdoor seating available",
+      phoneLabel: "Phone",
+      phoneNote: "Call for takeaway orders",
+      hoursLabel: "Opening hours",
+      hours: [
+        { days: "Monday – Friday", time: "12:00 – 01:00" },
+        { days: "Saturday", time: "12:00 – 24:00" },
+        { days: "Sunday", time: "12:00 – 01:00" },
+      ],
+      delivery: "Delivery & takeaway via Wolt and E-food",
+      openMaps: "Open in Google Maps",
+    },
+    cta: {
+      heading: "Hungry? Your order is",
+      headingAccent: "20 minutes",
+      headingSuffix: "away",
+      orderWolt: "Order on Wolt",
+      orderEfood: "Order on E-food",
+    },
+    footer: {
+      tagline: "Noodles & Buns · Kavala",
+      rightsReserved: "All rights reserved.",
+      address: "Dagkli 4, Kavala 654 03 · 251 062 1809",
+    },
+    logoAlt: "Igano Logo",
+    foodAlt: "Igano food",
+  },
+  gr: {
+    nav: {
+      subtitle: "Noodles & Buns",
+      menu: "Μενού",
+      location: "Τοποθεσία",
+      orderOnline: "Παράγγειλε",
+    },
+    hero: {
+      badge: "Ασιατικό street food · Καβάλα",
+      h1line3: "στην Καβάλα",
+      body: "Αυθεντικό street food, φτιαγμένο φρέσκο μπροστά σου. Διάλεξε τα noodles σου, πάρε ένα bao bun και πήγαινε — ή αφέσε μας να σου το φέρουμε.",
+      orderWolt: "Παράγγειλε στο Wolt",
+      orderEfood: "Παράγγειλε στο E-food",
+      reviews: "4,7 · 178 κριτικές",
+      priceRange: "€ 5–10 το άτομο",
+      openHours: "Ανοιχτά καθημερινά μέχρι αργά",
+      freshBadge: "ΦΡΕΣΚΟ",
+      freshSub: "wok καθημερινά",
+    },
+    menu: {
+      eyebrow: "Τα αγαπημένα",
+      headingMain: "Διάλεξε",
+      headingAccent: "αυτό που σου λείπει",
+      fullMenuLink: "Πλήρες μενού στο Wolt",
+    },
+    menuItems: [
+      {
+        title: "Noodles",
+        desc: "Τηγανισμένα σε wok επί παραγγελία σε δυνατή φλόγα — διάλεξε noodle, σάλτσα και topping.",
+        tags: ["Κοτόπουλο teriyaki", "Μοσχάρι hoisin", "Veggie γλυκόξινο"],
+        iconLabel: "Wok",
+        alt: "Noodles",
+      },
+      {
+        title: "Bao Buns",
+        desc: "Αέρινα αχνιστά buns με αργομαγειρεμένη γέμιση και τραγανή σαλάτα.",
+        tags: ["Crispy κοτόπουλο bao", "Pulled pork bao", "Tofu bao"],
+        iconLabel: "Veggie επιλογές",
+        alt: "Bao Buns",
+      },
+    ],
+    location: {
+      eyebrow: "Βρες μας",
+      heading: "Στην καρδιά της Καβάλας",
+      addressLabel: "Διεύθυνση",
+      addressValue: "Δαγκλή 4, Καβάλα 654 03",
+      addressNote: "Διαθέσιμα εξωτερικά τραπέζια",
+      phoneLabel: "Τηλέφωνο",
+      phoneNote: "Κάλεσε για takeaway παραγγελία",
+      hoursLabel: "Ώρες λειτουργίας",
+      hours: [
+        { days: "Δευτέρα – Παρασκευή", time: "12:00 – 01:00" },
+        { days: "Σάββατο", time: "12:00 – 24:00" },
+        { days: "Κυριακή", time: "12:00 – 01:00" },
+      ],
+      delivery: "Delivery & takeaway μέσω Wolt και E-food",
+      openMaps: "Άνοιγμα στους Χάρτες",
+    },
+    cta: {
+      heading: "Πεινάς; Η παραγγελία σου είναι",
+      headingAccent: "20 λεπτά",
+      headingSuffix: "μακριά",
+      orderWolt: "Παράγγειλε στο Wolt",
+      orderEfood: "Παράγγειλε στο E-food",
+    },
+    footer: {
+      tagline: "Noodles & Buns · Καβάλα",
+      rightsReserved: "Με επιφύλαξη παντός δικαιώματος.",
+      address: "Δαγκλή 4, Καβάλα 654 03 · 251 062 1809",
+    },
+    logoAlt: "Λογότυπο Igano",
+    foodAlt: "Φαγητό Igano",
+  },
+} as const;
+
+/* ------------------------------------------------------------------ */
+/* Delivery URLs                                                        */
+/* ------------------------------------------------------------------ */
+
+const WOLT_URL = "https://wolt.com/el/grc/kavala/restaurant/igano";
+const EFOOD_URL = "https://www.e-food.gr/delivery/kavala/igano-7428989";
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=IGANO+Noodles+and+Buns+Dagkli+4+Kavala";
+
+/* ------------------------------------------------------------------ */
+/* Brand icons                                                          */
+/* ------------------------------------------------------------------ */
+
 function InstagramIcon({ size = 17 }: { size?: number }) {
   return (
     <svg
@@ -51,16 +224,13 @@ function FacebookIcon({ size = 17 }: { size?: number }) {
   );
 }
 
-const WOLT_URL = "https://wolt.com/el/grc/kavala/restaurant/igano";
-const EFOOD_URL = "https://www.e-food.gr/delivery/kavala/igano-7428989";
-const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=IGANO+Noodles+and+Buns+Dagkli+4+Kavala";
+/* ------------------------------------------------------------------ */
+/* Logo badge                                                           */
+/* ------------------------------------------------------------------ */
 
-/* ---------- Brand logo: circular badge with stacked letters ---------- */
-function LogoBadge({ size = 44 }: { size?: number }) {
+function LogoBadge({ size = 44, alt }: { size?: number; alt: string }) {
   return (
     <div
-      aria-hidden
       className="flex items-center justify-center rounded-full select-none shrink-0 overflow-hidden"
       style={{
         width: size,
@@ -71,90 +241,18 @@ function LogoBadge({ size = 44 }: { size?: number }) {
     >
       <img
         src="/logo.png"
-        alt="Igano Logo"
+        alt={alt}
         className="w-full h-full object-contain"
       />
     </div>
   );
 }
 
-/* ---------- Minimal line-art food illustrations ---------- */
-function NoodleBowlArt() {
-  return (
-    <svg viewBox="0 0 240 200" className="w-full h-full" aria-hidden>
-      <g stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" fill="none">
-        <path className="steam" d="M95 58 q-6 -12 0 -22 q6 -10 0 -20" />
-        <path className="steam s2" d="M120 54 q-6 -12 0 -22 q6 -10 0 -20" />
-        <path className="steam s3" d="M145 58 q-6 -12 0 -22 q6 -10 0 -20" />
-      </g>
-      <g stroke="var(--ink)" strokeWidth="5" strokeLinecap="round">
-        <line x1="150" y1="20" x2="98" y2="96" />
-        <line x1="170" y1="30" x2="112" y2="98" />
-      </g>
-      <g
-        stroke="var(--wood-deep)"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
-      >
-        <path d="M100 96 q-4 14 2 26" />
-        <path d="M108 98 q-2 14 4 24" />
-        <path d="M116 98 q0 12 6 22" />
-      </g>
-      <path d="M48 110 h144 a72 62 0 0 1 -144 0 z" fill="var(--ink)" />
-      <path
-        d="M58 122 h124"
-        stroke="var(--paper)"
-        strokeWidth="4"
-        strokeLinecap="round"
-        opacity="0.5"
-      />
-      <rect x="98" y="176" width="44" height="10" rx="5" fill="var(--ink)" />
-    </svg>
-  );
-}
+/* ------------------------------------------------------------------ */
+/* Buttons                                                              */
+/* ------------------------------------------------------------------ */
 
-function BaoBunArt() {
-  return (
-    <svg viewBox="0 0 240 200" className="w-full h-full" aria-hidden>
-      <g stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" fill="none">
-        <path className="steam" d="M100 52 q-6 -10 0 -18 q6 -8 0 -16" />
-        <path className="steam s2" d="M140 52 q-6 -10 0 -18 q6 -8 0 -16" />
-      </g>
-      <path
-        d="M52 130 q0 -64 68 -64 q68 0 68 64 z"
-        fill="var(--paper)"
-        stroke="var(--ink)"
-        strokeWidth="6"
-      />
-      <g stroke="var(--ink)" strokeWidth="4" strokeLinecap="round" fill="none">
-        <path d="M120 66 v18" />
-        <path d="M98 70 q4 10 8 16" />
-        <path d="M142 70 q-4 10 -8 16" />
-      </g>
-      <path
-        d="M58 130 h124 q-6 16 -18 16 h-88 q-12 0 -18 -16 z"
-        fill="var(--wood)"
-      />
-      <path
-        d="M62 146 h116 q-8 24 -58 24 q-50 0 -58 -24 z"
-        fill="var(--paper)"
-        stroke="var(--ink)"
-        strokeWidth="6"
-      />
-      <rect x="40" y="176" width="160" height="10" rx="5" fill="var(--ink)" />
-    </svg>
-  );
-}
-
-/* ---------- Buttons ---------- */
-function PrimaryLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: ReactNode;
-}) {
+function PrimaryLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <a
       href={href}
@@ -178,13 +276,7 @@ function PrimaryLink({
   );
 }
 
-function SecondaryLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: ReactNode;
-}) {
+function SecondaryLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <a
       href={href}
@@ -202,35 +294,149 @@ function SecondaryLink({
   );
 }
 
-/* ---------- Page ---------- */
+/* ------------------------------------------------------------------ */
+/* Language toggle                                                      */
+/* ------------------------------------------------------------------ */
+
+function LangToggle() {
+  const { language, toggleLanguage } = useLanguage();
+  return (
+    <button
+      onClick={toggleLanguage}
+      aria-label={language === 'en' ? 'Switch to Greek' : 'Αλλαγή σε Αγγλικά'}
+      className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] transition-opacity hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+      style={{ outlineColor: "var(--amber)" }}
+    >
+      <span style={{ color: language === 'en' ? 'var(--ink)' : 'var(--ink-soft)' }}>EN</span>
+      <span style={{ color: "var(--line)" }}>/</span>
+      <span style={{ color: language === 'gr' ? 'var(--ink)' : 'var(--ink-soft)' }}>ΕΛ</span>
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                 */
+/* ------------------------------------------------------------------ */
+
 export default function Home() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const menuItems = [
     {
-      title: "Noodles",
-      desc: "Wok-fried to order over high flame — pick your noodle, sauce and topping.",
-      art: <img src="/noodles.png" alt="Noodles" className="w-full h-auto object-cover rounded-xl" />,
-      tags: ["Chicken teriyaki", "Beef hoisin", "Veggie sweet & sour"],
+      title: t.menuItems[0].title,
+      desc: t.menuItems[0].desc,
+      art: (
+        <img
+          src="/noodles.png"
+          alt={t.menuItems[0].alt}
+          className="w-full h-auto object-cover rounded-xl"
+        />
+      ),
+      tags: t.menuItems[0].tags,
       icon: <Flame size={16} />,
-      iconLabel: "Wok-fired",
+      iconLabel: t.menuItems[0].iconLabel,
     },
     {
-      title: "Bao Buns",
-      desc: "Pillow-soft steamed buns with slow-cooked fillings and crunchy slaw.",
-      art: <img src="/bao.png" alt="Bao Buns" className="w-full h-auto object-cover rounded-xl" />,
-      tags: ["Crispy chicken bao", "Pulled pork bao", "Tofu bao"],
+      title: t.menuItems[1].title,
+      desc: t.menuItems[1].desc,
+      art: (
+        <img
+          src="/bao.png"
+          alt={t.menuItems[1].alt}
+          className="w-full h-auto object-cover rounded-xl"
+        />
+      ),
+      tags: t.menuItems[1].tags,
       icon: <Leaf size={16} />,
-      iconLabel: "Veggie options",
+      iconLabel: t.menuItems[1].iconLabel,
     },
   ];
 
-  const hours = [
-    { days: "Monday – Friday", time: "12:00 – 01:00" },
-    { days: "Saturday", time: "12:00 – 24:00" },
-    { days: "Sunday", time: "12:00 – 01:00" },
-  ];
+  // ── Refs ───────────────────────────────────────────────────────────
+  const rootRef        = useRef<HTMLDivElement>(null);
+  const heroBadgeRef   = useRef<HTMLParagraphElement>(null);
+  const heroH1Ref      = useRef<HTMLHeadingElement>(null);
+  const heroBodyRef    = useRef<HTMLParagraphElement>(null);
+  const heroCtaRef     = useRef<HTMLDivElement>(null);
+  const heroStatsRef   = useRef<HTMLDivElement>(null);
+  const menuSectionRef = useRef<HTMLElement>(null);
+  const locationInfoRef = useRef<HTMLDivElement>(null);
+  const locationMapRef  = useRef<HTMLDivElement>(null);
+  const ctaBandRef     = useRef<HTMLElement>(null);
+
+  // ── Animations ─────────────────────────────────────────────────────
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Hero stagger load-in
+      const heroEls = [
+        heroBadgeRef.current,
+        heroH1Ref.current,
+        heroBodyRef.current,
+        heroCtaRef.current,
+        heroStatsRef.current,
+      ].filter(Boolean) as HTMLElement[];
+
+      if (heroEls.length) {
+        gsap.set(heroEls, { y: 30, opacity: 0 });
+        gsap.to(heroEls, {
+          y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: "power2.out",
+        });
+      }
+
+      // Menu section: heading + cards stagger on scroll
+      if (menuSectionRef.current) {
+        const heading = menuSectionRef.current.querySelector("h2");
+        const cards = Array.from(menuSectionRef.current.querySelectorAll("article"));
+        const targets = [heading, ...cards].filter(Boolean) as HTMLElement[];
+        gsap.set(targets, { y: 50, opacity: 0 });
+        gsap.to(targets, {
+          y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: "power2.out",
+          scrollTrigger: {
+            trigger: menuSectionRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+
+      // Location section: info column + map stagger on scroll
+      const locationTargets = [locationInfoRef.current, locationMapRef.current]
+        .filter(Boolean) as HTMLElement[];
+
+      if (locationTargets.length) {
+        gsap.set(locationTargets, { y: 50, opacity: 0 });
+        gsap.to(locationTargets, {
+          y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: "power2.out",
+          scrollTrigger: {
+            trigger: locationTargets[0],
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+
+      // CTA band on scroll
+      if (ctaBandRef.current) {
+        gsap.set(ctaBandRef.current, { y: 50, opacity: 0 });
+        gsap.to(ctaBandRef.current, {
+          y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
+          scrollTrigger: {
+            trigger: ctaBandRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div style={{ background: "var(--paper)", color: "var(--ink)" }}>
+    <div ref={rootRef} style={{ background: "var(--paper)", color: "var(--ink)" }}>
       {/* ================= NAVBAR ================= */}
       <header
         className="sticky top-0 z-50 border-b backdrop-blur-md"
@@ -241,38 +447,41 @@ export default function Home() {
       >
         <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 py-3">
           <a href="#top" className="flex items-center gap-3">
-            <LogoBadge size={42} />
+            <LogoBadge size={42} alt={t.logoAlt} />
             <div className="leading-tight">
               <span className="font-display text-xl tracking-[0.18em]">
                 IGANO
               </span>
               <span className="hidden sm:block text-[11px] uppercase tracking-[0.22em] text-orange-500">
-                Noodles &amp; Buns
+                {t.nav.subtitle}
               </span>
             </div>
           </a>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="#menu" className="hover:opacity-70 transition-opacity">
-              Menu
+              {t.nav.menu}
             </a>
             <a href="#location" className="hover:opacity-70 transition-opacity">
-              Location
+              {t.nav.location}
             </a>
           </div>
 
-          <a
-            href="#order"
-            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-transform duration-200 hover:-translate-y-0.5"
-            style={{
-              background: "var(--amber)",
-              color: "var(--ink)",
-              boxShadow: "0 6px 18px var(--amber-glow)",
-            }}
-          >
-            <ShoppingBag size={16} />
-            Order Online
-          </a>
+          <div className="flex items-center gap-4">
+            <LangToggle />
+            <a
+              href="#order"
+              className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "var(--amber)",
+                color: "var(--ink)",
+                boxShadow: "0 6px 18px var(--amber-glow)",
+              }}
+            >
+              <ShoppingBag size={16} />
+              {t.nav.orderOnline}
+            </a>
+          </div>
         </nav>
       </header>
 
@@ -282,6 +491,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 pt-14 pb-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pt-20 lg:pb-24">
             <div>
               <p
+                ref={heroBadgeRef}
                 className="mb-5 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em]"
                 style={{
                   borderColor: "var(--wood)",
@@ -289,57 +499,58 @@ export default function Home() {
                   background: "var(--wood-light)",
                 }}
               >
-                Asian street food · Kavala
+                {t.hero.badge}
               </p>
 
-              <h1 className="font-display uppercase leading-[0.95] text-[clamp(3rem,9vw,5.5rem)]">
+              <h1 ref={heroH1Ref} className="font-display uppercase leading-[0.95] text-[clamp(3rem,9vw,5.5rem)]">
                 Noodles
                 <br />
                 <span className="sign-glow">&amp;</span> Buns
                 <br />
-                in Kavala
+                {t.hero.h1line3}
               </h1>
 
               <p
+                ref={heroBodyRef}
                 className="mt-6 max-w-md text-base sm:text-lg leading-relaxed"
                 style={{ color: "var(--ink-soft)" }}
               >
-                Authentic street food, made fresh in front of you. Build your
-                wok noodles, grab a steamed bao, and go — or let us bring it to
-                your door.
+                {t.hero.body}
               </p>
 
               <div
+                ref={heroCtaRef}
                 id="order"
                 className="mt-8 flex flex-col sm:flex-row gap-3 scroll-mt-28"
               >
                 <PrimaryLink href={WOLT_URL}>
                   <Bike size={18} />
-                  Order on Wolt
+                  {t.hero.orderWolt}
                 </PrimaryLink>
                 <SecondaryLink href={EFOOD_URL}>
                   <Bike size={18} />
-                  Order on E-food
+                  {t.hero.orderEfood}
                 </SecondaryLink>
               </div>
 
               <div
+                ref={heroStatsRef}
                 className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium"
                 style={{ color: "var(--ink-soft)" }}
               >
                 <span className="inline-flex items-center gap-1.5">
                   <Star size={16} fill="var(--amber)" stroke="var(--amber)" />
-                  4.7 · 178 reviews
+                  {t.hero.reviews}
                 </span>
-                <span>€ 5–10 per person</span>
+                <span>{t.hero.priceRange}</span>
                 <span className="inline-flex items-center gap-1.5">
                   <Clock size={16} />
-                  Open daily until late
+                  {t.hero.openHours}
                 </span>
               </div>
             </div>
 
-            {/* Hero visual — replace with a real food photo (next/image) */}
+            {/* Hero visual */}
             <div className="relative">
               <div
                 className="relative overflow-hidden rounded-[2rem] border-[10px] aspect-[4/5] max-h-[520px] w-full"
@@ -353,7 +564,7 @@ export default function Home() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img
                     src="/igano.png"
-                    alt="Igano food"
+                    alt={t.foodAlt}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -367,12 +578,14 @@ export default function Home() {
                   boxShadow: "0 12px 28px rgba(24,24,22,0.3)",
                 }}
               >
-                <div className="font-display text-lg leading-none">FRESH</div>
+                <div className="font-display text-lg leading-none">
+                  {t.hero.freshBadge}
+                </div>
                 <div
                   className="text-[10px] font-semibold uppercase tracking-[0.2em]"
                   style={{ color: "var(--paper)" }}
                 >
-                  wok daily
+                  {t.hero.freshSub}
                 </div>
               </div>
             </div>
@@ -381,6 +594,7 @@ export default function Home() {
 
         {/* ================= MENU SNEAK PEEK ================= */}
         <section
+          ref={menuSectionRef}
           id="menu"
           className="scroll-mt-24"
           style={{ background: "var(--ink)" }}
@@ -392,13 +606,14 @@ export default function Home() {
                   className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em]"
                   style={{ color: "var(--wood)" }}
                 >
-                  Bestsellers
+                  {t.menu.eyebrow}
                 </p>
                 <h2
                   className="font-display uppercase text-[clamp(2rem,5vw,3.25rem)] leading-none"
                   style={{ color: "var(--paper)" }}
                 >
-                  Pick your <span className="sign-glow">craving</span>
+                  {t.menu.headingMain}{" "}
+                  <span className="sign-glow">{t.menu.headingAccent}</span>
                 </h2>
               </div>
               <a
@@ -408,7 +623,7 @@ export default function Home() {
                 className="inline-flex items-center gap-1.5 text-sm font-semibold hover:opacity-80 transition-opacity"
                 style={{ color: "var(--amber)" }}
               >
-                Full menu on Wolt <ArrowUpRight size={16} />
+                {t.menu.fullMenuLink} <ArrowUpRight size={16} />
               </a>
             </div>
 
@@ -419,20 +634,15 @@ export default function Home() {
                   className="group rounded-[1.75rem] p-6 sm:p-8 transition-transform duration-200 hover:-translate-y-1 flex flex-col"
                   style={{ background: "var(--paper)" }}
                 >
-                  {/* Image Container - ΔΙΟΡΘΩΜΕΝΟ για full frame */}
                   <div
                     className="mb-6 flex aspect-[16/10] rounded-2xl overflow-hidden border"
                     style={{
-                      // Κρατάμε το gradient για case που αργεί να φορτώσει η φωτό
                       background:
                         "linear-gradient(150deg, var(--wood-light), var(--paper-soft))",
                       borderColor: "var(--line)",
                     }}
                   >
-                    {/* Εσωτερικό wrapper - ΔΙΟΡΘΩΜΕΝΟ για full size */}
-                    <div className="h-full w-full">
-                      {item.art}
-                    </div>
+                    <div className="h-full w-full">{item.art}</div>
                   </div>
 
                   <div className="flex items-center justify-between gap-3">
@@ -485,16 +695,15 @@ export default function Home() {
               className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em]"
               style={{ color: "var(--wood-deep)" }}
             >
-              Find us
+              {t.location.eyebrow}
             </p>
             <h2 className="font-display uppercase text-[clamp(2rem,5vw,3.25rem)] leading-none mb-10">
-              In the heart of Kavala
+              {t.location.heading}
             </h2>
 
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
               {/* Info cards */}
-              <div className="grid gap-4 content-start">
-                
+              <div ref={locationInfoRef} className="grid gap-4 content-start">
                 <a
                   href={MAPS_URL}
                   target="_blank"
@@ -513,13 +722,16 @@ export default function Home() {
                       className="block text-xs font-semibold uppercase tracking-[0.18em]"
                       style={{ color: "var(--ink-soft)" }}
                     >
-                      Address
+                      {t.location.addressLabel}
                     </span>
                     <span className="mt-1 block font-semibold">
-                      Dagkli 4, Kavala 654 03
+                      {t.location.addressValue}
                     </span>
-                    <span className="block text-sm" style={{ color: "var(--ink-soft)" }}>
-                      Outdoor seating available
+                    <span
+                      className="block text-sm"
+                      style={{ color: "var(--ink-soft)" }}
+                    >
+                      {t.location.addressNote}
                     </span>
                   </span>
                 </a>
@@ -540,11 +752,14 @@ export default function Home() {
                       className="block text-xs font-semibold uppercase tracking-[0.18em]"
                       style={{ color: "var(--ink-soft)" }}
                     >
-                      Phone
+                      {t.location.phoneLabel}
                     </span>
                     <span className="mt-1 block font-semibold">251 062 1809</span>
-                    <span className="block text-sm" style={{ color: "var(--ink-soft)" }}>
-                      Call for takeaway orders
+                    <span
+                      className="block text-sm"
+                      style={{ color: "var(--ink-soft)" }}
+                    >
+                      {t.location.phoneNote}
                     </span>
                   </span>
                 </a>
@@ -564,11 +779,11 @@ export default function Home() {
                       className="text-xs font-semibold uppercase tracking-[0.18em]"
                       style={{ color: "var(--ink-soft)" }}
                     >
-                      Opening hours
+                      {t.location.hoursLabel}
                     </span>
                   </div>
                   <dl className="mt-4 space-y-2 text-sm">
-                    {hours.map((h) => (
+                    {t.location.hours.map((h) => (
                       <div
                         key={h.days}
                         className="flex items-center justify-between gap-4 border-b pb-2 last:border-0 last:pb-0"
@@ -586,20 +801,24 @@ export default function Home() {
                   style={{ background: "var(--ink)", color: "var(--paper)" }}
                 >
                   <Bike size={18} style={{ color: "var(--amber)" }} />
-                  Delivery &amp; takeaway via Wolt and E-food
+                  {t.location.delivery}
                 </div>
               </div>
 
               {/* Map */}
-              <div className="flex flex-col gap-3">
+              <div ref={locationMapRef} className="flex flex-col gap-3">
                 <div
                   className="relative min-h-[320px] flex-1 overflow-hidden rounded-[1.75rem] border"
-                  style={{ borderColor: "var(--line)", background: "var(--paper-soft)" }}
+                  style={{
+                    borderColor: "var(--line)",
+                    background: "var(--paper-soft)",
+                  }}
                 >
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3014.0894774864582!2d24.40390467551012!3d40.935706123891144!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14aebb0037d112a3%3A0xd8248b82bcf59f66!2sIGANO%20-%20Noodles%20and%20Buns!5e0!3m2!1sen!2sgr!4v1781127770716!5m2!1sen!2sgr"
                     width="100%"
                     height="100%"
+                    title={language === 'gr' ? 'Η τοποθεσία του IGANO στον Google Maps' : 'IGANO location on Google Maps'}
                     className="absolute inset-0 h-full w-full border-0"
                     allowFullScreen
                     loading="lazy"
@@ -614,7 +833,7 @@ export default function Home() {
                   className="inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-90"
                   style={{ background: "var(--amber)", color: "var(--ink)" }}
                 >
-                  Open in Google Maps{" "}
+                  {t.location.openMaps}{" "}
                   <ArrowUpRight size={15} />
                 </a>
               </div>
@@ -624,6 +843,7 @@ export default function Home() {
 
         {/* ================= CTA BAND ================= */}
         <section
+          ref={ctaBandRef}
           style={{
             background: "var(--wood-light)",
             borderTop: "1px solid var(--line)",
@@ -633,12 +853,13 @@ export default function Home() {
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 sm:px-6 py-12 text-center">
             <UtensilsCrossed size={22} style={{ color: "var(--wood-deep)" }} />
             <h2 className="font-display uppercase text-[clamp(1.6rem,4vw,2.5rem)] leading-tight max-w-xl">
-              Hungry? Your order is{" "}
-              <span className="sign-glow">20 minutes</span> away
+              {t.cta.heading}{" "}
+              <span className="sign-glow">{t.cta.headingAccent}</span>{" "}
+              {t.cta.headingSuffix}
             </h2>
             <div className="flex flex-col sm:flex-row gap-3">
-              <PrimaryLink href={WOLT_URL}>Order on Wolt</PrimaryLink>
-              <SecondaryLink href={EFOOD_URL}>Order on E-food</SecondaryLink>
+              <PrimaryLink href={WOLT_URL}>{t.cta.orderWolt}</PrimaryLink>
+              <SecondaryLink href={EFOOD_URL}>{t.cta.orderEfood}</SecondaryLink>
             </div>
           </div>
         </section>
@@ -650,11 +871,11 @@ export default function Home() {
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
             {/* Brand */}
             <div className="flex items-center gap-3">
-              <LogoBadge size={40} />
+              <LogoBadge size={40} alt={t.logoAlt} />
               <div className="leading-tight text-center sm:text-left">
                 <span className="font-display tracking-[0.18em] block">IGANO</span>
                 <span className="block text-[11px] uppercase tracking-[0.2em] opacity-60 mt-0.5">
-                  Noodles &amp; Buns · Kavala
+                  {t.footer.tagline}
                 </span>
               </div>
             </div>
@@ -689,9 +910,10 @@ export default function Home() {
             }}
           >
             <p>
-              © {new Date().getFullYear()} IGANO — Noodles and Buns. All rights reserved.
+              © {new Date().getFullYear()} IGANO — Noodles and Buns.{" "}
+              {t.footer.rightsReserved}
             </p>
-            <p>Dagkli 4, Kavala 654 03 · 251 062 1809</p>
+            <p>{t.footer.address}</p>
           </div>
         </div>
       </footer>
