@@ -97,6 +97,11 @@ const translations = {
     },
     logoAlt: "Igano Logo",
     foodAlt: "Igano food",
+    gallery: {
+      eyebrow: "Gallery",
+      headingMain: "A Taste of",
+      headingAccent: "the Place",
+    },
   },
   gr: {
     nav: {
@@ -170,6 +175,11 @@ const translations = {
     },
     logoAlt: "Λογότυπο Igano",
     foodAlt: "Φαγητό Igano",
+    gallery: {
+      eyebrow: "Γκαλερί",
+      headingMain: "Μια γεύση από",
+      headingAccent: "τον χώρο",
+    },
   },
 } as const;
 
@@ -363,7 +373,8 @@ export default function Home() {
   const menuSectionRef = useRef<HTMLElement>(null);
   const locationInfoRef = useRef<HTMLDivElement>(null);
   const locationMapRef  = useRef<HTMLDivElement>(null);
-  const ctaBandRef     = useRef<HTMLElement>(null);
+  const ctaBandRef        = useRef<HTMLElement>(null);
+  const gallerySectionRef = useRef<HTMLElement>(null);
 
   // ── Animations ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -425,6 +436,24 @@ export default function Home() {
           y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
           scrollTrigger: {
             trigger: ctaBandRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+
+      // Gallery section: heading + tiles stagger on scroll
+      if (gallerySectionRef.current) {
+        const galleryHeading = gallerySectionRef.current.querySelector<HTMLElement>("h2");
+        const galleryTiles = Array.from(
+          gallerySectionRef.current.querySelectorAll<HTMLElement>(".gallery-tile")
+        );
+        const galleryTargets = [galleryHeading, ...galleryTiles].filter(Boolean) as HTMLElement[];
+        gsap.set(galleryTargets, { y: 50, opacity: 0 });
+        gsap.to(galleryTargets, {
+          y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: "power2.out",
+          scrollTrigger: {
+            trigger: gallerySectionRef.current,
             start: "top 85%",
             toggleActions: "play none none none",
           },
@@ -684,6 +713,124 @@ export default function Home() {
                   </ul>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================= GALLERY ================= */}
+        <section
+          ref={gallerySectionRef}
+          className="py-16 lg:py-24"
+          style={{ background: "var(--paper)" }}
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mb-10">
+              <p
+                className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em]"
+                style={{ color: "var(--wood-deep)" }}
+              >
+                {t.gallery.eyebrow}
+              </p>
+              <h2 className="font-display uppercase text-[clamp(2rem,5vw,3.25rem)] leading-none">
+                {t.gallery.headingMain}{" "}
+                <span className="sign-glow">{t.gallery.headingAccent}</span>
+              </h2>
+            </div>
+
+            {/* TODO: replace placeholder divs with next/image once real photos are available */}
+            <div
+              className="grid gap-3 grid-cols-2 lg:grid-cols-4"
+              style={{ gridAutoRows: "160px" }}
+            >
+              {/* Tile 1 — interior/space (featured 2×2 tile) */}
+              <div className="gallery-tile lg:col-span-2 lg:row-span-2 rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, var(--wood-light) 0%, var(--paper-soft) 55%, var(--wood) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--ink-soft)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--wood-deep)" }}>Interior / Space</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tile 2 — food close-up / noodles */}
+              <div className="gallery-tile rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, var(--wood) 0%, var(--wood-light) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--paper)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--paper-soft)" }}>Food / Noodles</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tile 3 — bao bun (tall: row-span-2 on desktop) */}
+              <div className="gallery-tile lg:row-span-2 rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(180deg, var(--paper-soft) 0%, var(--wood-light) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--ink-soft)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--wood-deep)" }}>Food / Bao Bun</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tile 4 — wok action / cooking */}
+              <div className="gallery-tile rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--paper-soft)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--wood-light)" }}>Cooking / Wok</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tile 5 — exterior / entrance (wide: col-span-2 on desktop) */}
+              <div className="gallery-tile lg:col-span-2 rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, var(--paper-soft) 0%, var(--wood-light) 75%, var(--wood) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--ink-soft)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--wood-deep)" }}>Exterior / Entrance</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tile 6 — packaging / branding (wide: col-span-2 on desktop) */}
+              <div className="gallery-tile lg:col-span-2 rounded-2xl overflow-hidden group cursor-pointer">
+                <div
+                  className="relative h-full w-full transition-transform duration-500 group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, var(--wood-deep) 0%, var(--ink) 100%)" }}
+                >
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--paper-soft)" }}>
+                      {language === "en" ? "Photo placeholder" : "Φωτό placeholder"}
+                    </span>
+                    <span className="text-xs" style={{ color: "var(--wood-light)" }}>Packaging / Branding</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
